@@ -63,38 +63,38 @@ const useRoute = (isAuth) => {
     return application;
   }
   return (
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{
-            title: "Welcome to this.app!",
-            headerTintColor: "#fff",
-            headerTitleAlign: "center",
-            headerStyle: {
-              backgroundColor: "#f4511e",
-            },
-          }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <Stack.Screen
-          options={{
-            title: "Welcome to this.app!",
-            headerTintColor: "#fff",
-            headerTitleAlign: "center",
-            headerStyle: {
-              backgroundColor: "#f4511e",
-            },
-          }}
-          name="Registration"
-          component={RegistrationScreen}
-        />
-      </Stack.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{
+          title: "Welcome to this.app!",
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+        }}
+        name="Login"
+        component={LoginScreen}
+      />
+      <Stack.Screen
+        options={{
+          title: "Welcome to this.app!",
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "#f4511e",
+          },
+        }}
+        name="Registration"
+        component={RegistrationScreen}
+      />
+    </Stack.Navigator>
   );
 };
 
 export default function App() {
   const [isAuth, setIsAuth] = useState(true);
-  const routing = useRoute(false);
+  const routing = useRoute(true);
   return <NavigationContainer>{routing}</NavigationContainer>;
 }
 
