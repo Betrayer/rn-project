@@ -56,8 +56,6 @@ export default function RegistrationScreen({ navigation }) {
             <Text>Back to login</Text>
           </TouchableOpacity>
         </View>
-
-        {/* <Button title="Login" onPress={() => navigation.navigate("Login")} /> */}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -68,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    // justifyContent: "center",
   },
   registrationHeader: {
     marginTop: 100,
