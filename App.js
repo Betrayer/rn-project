@@ -3,18 +3,58 @@ import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 import LoginScreen from "./components/authentication/LoginScreen";
 import RegistrationScreen from "./components/authentication/RegistrationScreen";
 import HomeScreen from "./components/application/HomeScreen";
-import MapScreen from "./components/application/MapScreen";
+import ProfileScreen from "./components/application/ProfileScreen";
+import CreateScreen from "./components/application/CreateScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const application = (
-  <Tab.Navigator>
-    <Tab.Screen component={HomeScreen} />
-    <Tab.Screen component={MapScreen} />
+  <Tab.Navigator
+    tabBarOptions={{
+      showLabel: false,
+    }}
+  >
+    <Tab.Screen
+      options={{
+        // title: '',
+        tabBarIcon: ({ focused, size, color }) => (
+          <Ionicons name="ios-home" size={focused ? 35 : size} color={color} />
+        ),
+      }}
+      name="Home"
+      component={HomeScreen}
+    />
+    <Tab.Screen
+      options={{
+        tabBarIcon: ({ focused, size, color }) => (
+          <Ionicons
+            name="ios-add-circle"
+            size={focused ? 35 : size}
+            color={color}
+          />
+        ),
+      }}
+      name="Create"
+      component={CreateScreen}
+    />
+    <Tab.Screen
+      options={{
+        tabBarIcon: ({ focused, size, color }) => (
+          <Ionicons
+            name="ios-person"
+            size={focused ? 35 : size}
+            color={color}
+          />
+        ),
+      }}
+      name="Profile"
+      component={ProfileScreen}
+    />
   </Tab.Navigator>
 );
 
@@ -22,27 +62,39 @@ const useRoute = (isAuth) => {
   if (isAuth) {
     return application;
   }
-  return (application = (
-    <Stack.Navigator>
-      <View style={styles.container}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Registration" component={RegistrationScreen} />
-      </View>
-    </Stack.Navigator>
-  ));
+  return (
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{
+            title: "Welcome to this.app!",
+            headerTintColor: "#fff",
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+          }}
+          name="Login"
+          component={LoginScreen}
+        />
+        <Stack.Screen
+          options={{
+            title: "Welcome to this.app!",
+            headerTintColor: "#fff",
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+          }}
+          name="Registration"
+          component={RegistrationScreen}
+        />
+      </Stack.Navigator>
+  );
 };
 
 export default function App() {
-  // return (
-  //   <Stack.Navigator>
-  //     <View style={styles.container}>
-  //     <Stack.Screen name='Login' component={LoginScreen} />
-  //     <Stack.Screen name='Registration' component={RegistrationScreen} />
-  //     </View>
-  //   </Stack.Navigator>
-  // );
   const [isAuth, setIsAuth] = useState(true);
-  const routing = useRoute(true);
+  const routing = useRoute(false);
   return <NavigationContainer>{routing}</NavigationContainer>;
 }
 
