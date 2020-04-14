@@ -33,11 +33,14 @@ export default function RegistrationScreen({ navigation }) {
   // }
 
   const registration = async () => {
-    const { email, password } = state;
+    const { email, password, login } = state;
     try {
       const user = await db
         .auth()
         .createUserWithEmailAndPassword(email, password);
+      await user.user.updateProfile({
+        displayName: login,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -60,11 +63,11 @@ export default function RegistrationScreen({ navigation }) {
           placeholder="Email"
           onChangeText={(value) => setState({ ...state, email: value })}
         />
-        {/* <TextInput
+        <TextInput
           style={styles.registrationInput}
           placeholder="Login"
           onChangeText={(value) => setState({ ...state, login: value })}
-        /> */}
+        />
         <TextInput
           secureTextEntry={true}
           style={styles.registrationInput}
