@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,13 +9,44 @@ import {
   Keyboard,
 } from "react-native";
 
-export default function RegistrationScreen({ navigation }) {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+import { db } from "../../firebase/config";
 
-  const registration = () => {
+export default function RegistrationScreen({ navigation }) {
+  const [state, setState] = useState({
+    email: "",
+    login: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    currentUser();
+  }, []);
+
+  const currentUser = async () => {
+    const currentUser = await db.auth().currentUser;
+  };
+
+  // const addInfo = async() => {
+  //   const currentUser = await db.auth().currentUser.updateProfile({
+  //     displayName: 'Bodya'
+  //   })
+  // }
+
+  const registration = async () => {
+    const { email, password } = state;
+    try {
+      const user = await db
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error);
+    }
     Keyboard.dismiss();
+    setState({
+      email: "",
+      login: "",
+      password: "",
+    });
   };
 
   return (
@@ -27,18 +58,18 @@ export default function RegistrationScreen({ navigation }) {
         <TextInput
           style={styles.registrationInput}
           placeholder="Email"
-          onChangeText={setEmail}
+          onChangeText={(value) => setState({ ...state, email: value })}
         />
-        <TextInput
+        {/* <TextInput
           style={styles.registrationInput}
           placeholder="Login"
-          onChangeText={setLogin}
-        />
+          onChangeText={(value) => setState({ ...state, login: value })}
+        /> */}
         <TextInput
           secureTextEntry={true}
           style={styles.registrationInput}
           placeholder="Password"
-          onChangeText={setPassword}
+          onChangeText={(value) => setState({ ...state, password: value })}
         />
         <TouchableOpacity
           activeOpacity={0.5}

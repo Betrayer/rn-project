@@ -9,6 +9,7 @@ import RegistrationScreen from "./components/authentication/RegistrationScreen";
 import HomeScreen from "./components/application/HomeScreen";
 import ProfileScreen from "./components/application/ProfileScreen";
 import CreateScreen from "./components/application/CreateScreen";
+import { db } from "./firebase/config";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -76,6 +77,10 @@ const useRoute = (isAuth) => {
         name="Login"
         component={LoginScreen}
       />
+      {/* {(props) => {
+          return <LoginScreen {...props} />;
+        }}
+      </Stack.Screen> */}
       <Stack.Screen
         options={{
           title: "Welcome to this.app!",
@@ -93,8 +98,13 @@ const useRoute = (isAuth) => {
 };
 
 export default function App() {
-  const [isAuth, setIsAuth] = useState(true);
-  const routing = useRoute(true);
+  const [isAuth, setIsAuth] = useState(null);
+
+  db.auth().onAuthStateChanged((user) => {
+    console.log("Current user", user);
+    setIsAuth(user);
+  });
+  const routing = useRoute(isAuth);
   return <NavigationContainer>{routing}</NavigationContainer>;
 }
 

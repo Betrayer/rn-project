@@ -8,12 +8,22 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import {db} from "../../firebase/config";
 
 export default function LoginScreen({ navigation }) {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+  });
 
-  const confirmation = () => {
+  const confirmation = async () => {
+    console.log("state", state);
+    const { email, password } = state;
+    try {
+      const user = await db.auth().signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error);
+    }
     Keyboard.dismiss();
   };
 
@@ -23,14 +33,14 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.loginHeader}>Please, enter your credentials</Text>
         <TextInput
           style={styles.loginInput}
-          placeholder="Login"
-          onChangeText={setLogin}
+          placeholder="Email"
+          onChangeText={(value) => setState({ ...state, email: value })}
         />
         <TextInput
           secureTextEntry={true}
           style={styles.loginInput}
           placeholder="Password"
-          onChangeText={setPassword}
+          onChangeText={(value) => setState({ ...state, password: value })}
         />
         <TouchableOpacity
           activeOpacity={0.5}
