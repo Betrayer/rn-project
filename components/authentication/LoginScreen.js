@@ -8,7 +8,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import {db} from "../../firebase/config";
+import {auth} from "../../firebase/config";
 
 export default function LoginScreen({ navigation }) {
   const [state, setState] = useState({
@@ -20,7 +20,7 @@ export default function LoginScreen({ navigation }) {
     console.log("state", state);
     const { email, password } = state;
     try {
-      const user = await db.auth().signInWithEmailAndPassword(email, password);
+      const user = await auth.signInWithEmailAndPassword(email, password);
     } catch (error) {
       console.log(error);
     }

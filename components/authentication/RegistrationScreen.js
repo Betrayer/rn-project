@@ -9,7 +9,7 @@ import {
   Keyboard,
 } from "react-native";
 
-import { db } from "../../firebase/config";
+import { auth } from "../../firebase/config";
 
 export default function RegistrationScreen({ navigation }) {
   const [state, setState] = useState({
@@ -23,7 +23,7 @@ export default function RegistrationScreen({ navigation }) {
   }, []);
 
   const currentUser = async () => {
-    const currentUser = await db.auth().currentUser;
+    const currentUser = await auth.currentUser;
   };
 
   // const addInfo = async() => {
@@ -35,9 +35,7 @@ export default function RegistrationScreen({ navigation }) {
   const registration = async () => {
     const { email, password, login } = state;
     try {
-      const user = await db
-        .auth()
-        .createUserWithEmailAndPassword(email, password);
+      const user = await auth.createUserWithEmailAndPassword(email, password);
       await user.user.updateProfile({
         displayName: login,
       });
