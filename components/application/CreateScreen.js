@@ -1,24 +1,81 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Button,
+  Image,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
-import { auth, firestore } from "../../firebase/config";
+import { Camera } from "expo-camera";
+import * as Location from "expo-location";
+import { firestore, storage } from "../../firebase/config";
 
-export default function HomeScreen() {
-  const logOut = async () => {
-    await auth.signOut();
+export default function CreateScreen() {
+  const { userId, userName } = useSelector((state) => state.user);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [takeAPicture, setTakeAPicture] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+      console.log("status", status);
+    })();
+  }, []);
+
+  const snap = async () => {
+    if (takeAPicture) {
+      let photo = await takeAPicture.takePictureAsync();
+      console.log("photo", photo);
+      setPhoto(photo.uri);
+      uploadFile(photo.uri);
+    }
   };
 
-  const { userId, userName } = useSelector((state) => state.user);
+  const uploadFile = async (img) => {
+    const response = await fetch(img);
+    const file = await response.blob();
+    const fileUploaded = await storage
+      .ref(`image/${"someRandomButt"}`)
+      .put(file);
+    fileUploaded.on(
+      "state_changed",
+      () => {},
+      () => {},
+      async () => {
+        const url = await storage
+          .ref("image")
+          .child("someRandomButt")
+          .getDownloadURL();
+        console.log("url", url);
+      }
+    );
+  };
 
-  const addPost = async () => {
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  });
+
+  const sendPost = async () => {
     await firestore.collection("posts").add({
-      image:
-        "https://lh3.googleusercontent.com/proxy/FKF3h2i6vxbXA2eGHvfyNAaQjovHGN096LjWhViGOzncrAOKgkLRmIjGblVpbpcuCo4au8rf_ZHiVEn1XX52BfmgzF5R3QFDkXRICglGVUnbmQ3zPMBNLtA9GS6v_w0cu9LPOe176PTjjbpaegXyjE__MZ74",
-      comment: "Продается хорёк",
-      likes: "700",
-      userId: "034tatq5pnhM0oAHJcv7bnWL4w93",
-      userName: "Вайф",
+      image: photo,
+      location: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+      userId,
+      userName,
     });
   };
 
@@ -28,13 +85,31 @@ export default function HomeScreen() {
         <Text>Create and share your post</Text>
         <TouchableOpacity>
           <Ionicons
-            name="ios-send"
+            name="ios-aperture"
             size={35}
             color={"#3f9bc1"}
-            onPress={addPost}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              );
+            }}
           />
         </TouchableOpacity>
       </View>
+      <Camera
+        ref={(ref) => setTakeAPicture(ref)}
+        style={{ width: 300, height: 300 }}
+        type={type}
+      ></Camera>
+      {photo ? (
+        <Image source={{ uri: photo }} style={{ width: 300, height: 300 }} />
+      ) : (
+        <></>
+      )}
+      <Button title="Snap" onPress={snap} />
+      <Button title="Send" onPress={sendPost} />
     </View>
   );
 }

@@ -46,38 +46,23 @@ export default function HomeScreen() {
     // console.log("userId", userId);
     const data = await firestore
       .collection("posts")
-      .where("userId", "==", userId)
       .onSnapshot((data) => setAllPosts(data.docs.map((doc) => doc.data())));
   };
 
   console.log("allPosts", allPosts);
   // console.log('user.displayName', user.displayName)
 
-  const logOut = async () => {
-    await auth.signOut();
-    dispatch({ type: "USER_SIGNED_OUT" });
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}></View>
       <FlatList
         data={allPosts}
-        keyExtractor={(item) => item.userId}
-        renderItem={({ item, index }) => {
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => {
           // console.log("post", item);
           return (
             <View style={styles.postWrapper}>
-              <Image
-                style={styles.postImage}
-                // style={{
-                //   width: 350,
-                //   height: 200,
-                //   marginBottom: 10,
-                //   borderRadius: 10,
-                // }}
-                source={{ uri: item.image }}
-              />
+              <Image style={styles.postImage} source={{ uri: item.image }} />
               <View style={styles.commentWrapper}>
                 <Text>Comments:</Text>
                 <Text style={styles.commentText}>
@@ -110,7 +95,7 @@ const styles = StyleSheet.create({
   postImage: {
     width: 360,
     height: 220,
-    borderTopRightRadius: 20
+    borderTopRightRadius: 20,
   },
   postWrapper: {
     flexDirection: "column",
