@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
-
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 import { auth } from "../../firebase/config";
 
 export default function RegistrationScreen({ navigation }) {
@@ -20,7 +22,15 @@ export default function RegistrationScreen({ navigation }) {
 
   useEffect(() => {
     currentUser();
+    getPermissionAsync();
   }, []);
+
+  getPermissionAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+  };
 
   const currentUser = async () => {
     const currentUser = await auth.currentUser;
@@ -53,6 +63,12 @@ export default function RegistrationScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <TouchableOpacity onPress={() => {}}>
+          <Image
+            style={{ width: 150, height: 150 }}
+            source={{ uri: "https://2ch.hk/mus/src/745964/15764589968690.jpg" }}
+          />
+        </TouchableOpacity>
         <Text style={styles.registrationHeader}>
           Fill the forms below to create account
         </Text>

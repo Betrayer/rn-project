@@ -23,7 +23,7 @@ export default function CreateScreen() {
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
-      console.log("status", status);
+      // console.log("status", status);
     })();
   }, []);
 
@@ -39,21 +39,11 @@ export default function CreateScreen() {
   const uploadFile = async (img) => {
     const response = await fetch(img);
     const file = await response.blob();
-    const fileUploaded = await storage
-      .ref(`image/${"someRandomButt"}`)
-      .put(file);
-    fileUploaded.on(
-      "state_changed",
-      () => {},
-      () => {},
-      async () => {
-        const url = await storage
-          .ref("image")
-          .child("someRandomButt")
-          .getDownloadURL();
-        console.log("url", url);
-      }
-    );
+    const uniqueName = Date.now().toString();
+    await storage.ref(`image/${uniqueName}`).put(file);
+    const url = await storage.ref("image").child(uniqueName).getDownloadURL();
+    console.log("url", url);
+    sendPost(url);
   };
 
   useEffect(() => {
@@ -67,9 +57,9 @@ export default function CreateScreen() {
     })();
   });
 
-  const sendPost = async () => {
+  const sendPost = async (img) => {
     await firestore.collection("posts").add({
-      image: photo,
+      image: img,
       location: {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -100,11 +90,11 @@ export default function CreateScreen() {
       </View>
       <Camera
         ref={(ref) => setTakeAPicture(ref)}
-        style={{ width: 300, height: 300 }}
+        style={{ width: 300, height: 200 }}
         type={type}
       ></Camera>
       {photo ? (
-        <Image source={{ uri: photo }} style={{ width: 300, height: 300 }} />
+        <Image source={{ uri: photo }} style={{ width: 300, height: 200 }} />
       ) : (
         <></>
       )}
