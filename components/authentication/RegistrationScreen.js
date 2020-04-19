@@ -19,13 +19,14 @@ export default function RegistrationScreen({ navigation }) {
     login: "",
     password: "",
   });
+  const [userAvatar, setUserAvatar] = useState("");
 
   useEffect(() => {
     currentUser();
     getPermissionAsync();
   }, []);
 
-  getPermissionAsync = async () => {
+  const getPermissionAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status !== "granted") {
       alert("Sorry, we need camera roll permissions to make this work!");
@@ -48,6 +49,7 @@ export default function RegistrationScreen({ navigation }) {
       const user = await auth.createUserWithEmailAndPassword(email, password);
       await user.user.updateProfile({
         displayName: login,
+        photoURL: userAvatar,
       });
     } catch (error) {
       console.log(error);
@@ -60,13 +62,23 @@ export default function RegistrationScreen({ navigation }) {
     });
   };
 
+  const chooseAvatar = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    setUserAvatar(result.uri);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={chooseAvatar}>
           <Image
             style={{ width: 150, height: 150 }}
-            source={{ uri: "https://2ch.hk/mus/src/745964/15764589968690.jpg" }}
+            source={{ uri: userAvatar }}
           />
         </TouchableOpacity>
         <Text style={styles.registrationHeader}>

@@ -7,7 +7,6 @@ import {
   FlatList,
   Image,
   Button,
-  Modal
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,6 +38,7 @@ export const PostScreen = () => {
       payload: {
         userName: currentUser.displayName,
         userId: currentUser.uid,
+        userAvatar: currentUser.photoURL,
       },
     });
   };
@@ -70,6 +70,7 @@ export const PostScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.topHeader}></View>
       <FlatList
         data={allPosts}
         keyExtractor={(item, index) => index.toString()}
@@ -82,19 +83,34 @@ export const PostScreen = () => {
               onLongPress={() => navigation.navigate("Map", { info: item })}
             >
               <Image style={styles.postImage} source={{ uri: item.image }} />
+
               <View style={styles.commentWrapper}>
-                <Text>Comments:</Text>
-                <Text style={styles.commentText}>
+                {/* <Text>Comments:</Text> */}
+                {/* <Text style={styles.commentText}>
                   {item.userName}: {item.comment}
-                </Text>
-                <Text>{item.likes}</Text>
-                <Button
-                  title="like"
-                  onPress={() => {
-                    getCurrentUserPost(item.id);
-                  }}
-                />
-                <Button title='comments'/>
+                </Text> */}
+                <View style={styles.commentsButtonWrapper}>
+                  <View style={styles.likesWrapper}>
+                    <TouchableOpacity>
+                      <Ionicons
+                        style={styles.exit}
+                        name="ios-heart"
+                        size={35}
+                        color={"#FF0000"}
+                        onPress={() => {
+                          getCurrentUserPost(item.id);
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <Text>{item.likes}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.commentsButton}
+                    onPress={() => navigation.navigate("Comments")}
+                  >
+                    <Text style={styles.buttonText}>Show comments</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </TouchableOpacity>
           );
@@ -109,7 +125,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
+    // backgroundColor: '#F5FFFA'
     // justifyContent: "center",
+  },
+  topHeader: {
+    height: 50,
   },
   wrapper: {
     marginTop: 40,
@@ -122,7 +142,7 @@ const styles = StyleSheet.create({
   postImage: {
     width: 360,
     height: 220,
-    borderTopRightRadius: 20,
+    borderRadius: 10,
   },
   postWrapper: {
     flexDirection: "column",
@@ -132,5 +152,28 @@ const styles = StyleSheet.create({
   commentWrapper: {
     width: 360,
     flexDirection: "column",
+  },
+  likesWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 50,
+    justifyContent: "space-around",
+  },
+  commentsButtonWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  commentsButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#1E90FF",
+    width: 200,
+    height: 30,
+    borderRadius: 7,
+  },
+  buttonText: {
+    color: "#FFFFFF",
   },
 });

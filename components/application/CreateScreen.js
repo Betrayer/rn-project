@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
 import { firestore, storage } from "../../firebase/config";
+import { FlatList } from "react-native-gesture-handler";
 
 export default function CreateScreen() {
   const { userId, userName } = useSelector((state) => state.user);
@@ -66,40 +67,47 @@ export default function CreateScreen() {
       },
       userId,
       userName,
+      likes: 0,
     });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.exitWrapper}>
-        <Text>Create and share your post</Text>
-        <TouchableOpacity>
-          <Ionicons
-            name="ios-aperture"
-            size={35}
-            color={"#3f9bc1"}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-      <Camera
-        ref={(ref) => setTakeAPicture(ref)}
-        style={{ width: 300, height: 200 }}
-        type={type}
-      ></Camera>
+      {/* <Button title="Snap" onPress={snap} /> */}
       {photo ? (
-        <Image source={{ uri: photo }} style={{ width: 300, height: 200 }} />
+        <View style={styles.pictureTakenWrapper}>
+          <Image source={{ uri: photo }} style={styles.pictureTaken} />
+          <Button title="Send" onPress={sendPost} />
+        </View>
       ) : (
-        <></>
+        <View style={styles.cameraWrapper}>
+          <View style={styles.cameraWindow}>
+            <Camera
+              ref={(ref) => setTakeAPicture(ref)}
+              style={{ width: "100%", height: "90%" }}
+              type={type}
+            ></Camera>
+          </View>
+
+          <View style={styles.cameraButtonsWrapper}>
+            <TouchableOpacity
+              style={styles.cameraButton}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Text>SWITCH</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cameraButton} onPress={snap}>
+              <Text>SNAP</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
-      <Button title="Snap" onPress={snap} />
-      <Button title="Send" onPress={sendPost} />
     </View>
   );
 }
@@ -109,13 +117,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    // justifyContent: "center",
+    flexDirection: "column",
+    justifyContent: "center",
   },
-  exitWrapper: {
-    marginTop: 40,
+  cameraWrapper: {
+    height: "100%",
+    width: "100%",
+    // alignItems: 'center'
+  },
+  cameraWindow: {
+    // flexDirection: 'row',
+    justifyContent: "center",
+  },
+  cameraButtonsWrapper: {
     flexDirection: "row",
-    width: 380,
-    justifyContent: "space-between",
+    justifyContent: "space-around",
+  },
+  cameraButton: {
+    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#1E90FF",
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+  },
+  pictureTaken: {
+    width: "100%",
+    height: "100%",
+  },
+  pictureTakenWrapper: {
+    width: "100%",
+    height: "80%",
   },
 });

@@ -8,6 +8,7 @@ const initialState = {
   userName: null,
   userId: null,
   userPosts: [],
+  userAvatar: null,
 };
 
 const reducer = {
@@ -16,6 +17,7 @@ const reducer = {
     userName: payload.userName,
     userId: payload.userId,
     userPosts: payload.userPosts,
+    userAvatar: payload.userAvatar,
   }),
   USER_SIGNED_OUT: () => initialState,
 };

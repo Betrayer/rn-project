@@ -8,7 +8,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import {auth} from "../../firebase/config";
+import { auth } from "../../firebase/config";
 
 export default function LoginScreen({ navigation }) {
   const [state, setState] = useState({

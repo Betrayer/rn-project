@@ -17,7 +17,7 @@ export const MapScreen = ({ route }) => (
 
 const styles = StyleSheet.create({
   mapContainer: {
-    width: "80%",
-    height: "80%",
+    width: '100%',
+    height: "100%",
   },
 });

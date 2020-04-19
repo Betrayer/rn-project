@@ -17,7 +17,7 @@ export default function ProfileScreen() {
     await auth.signOut();
   };
 
-  const { userId } = useSelector((state) => state.user);
+  const { userId, userName, userAvatar } = useSelector((state) => state.user);
 
   const [currentUserPosts, setCurrentUserPosts] = useState([]);
 
@@ -38,19 +38,34 @@ export default function ProfileScreen() {
       );
   };
 
+  const getCurrentUserPost = async (id) => {
+    const data = await firestore.collection("posts").doc(id).get();
+    // console.log("data.data", data.data());
+    await firestore
+      .collection("posts")
+      .doc(id)
+      .update({
+        likes: Number(data.data().likes) + 1,
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.exitWrapper}>
-        <Text>Profile</Text>
+        <Text style={styles.profile}>Signed as {userName}</Text>
         <TouchableOpacity>
           <Ionicons
             style={styles.exit}
             name="md-exit"
             size={35}
-            color={"#3f9bc1"}
+            color={"#1E90FF"}
             onPress={logOut}
           />
         </TouchableOpacity>
+      </View>
+      <View style={styles.profileImageWrapper}>
+        <Image style={styles.profileImage} source={{ uri: userAvatar }} />
+        <Text style={styles.profileName}></Text>
       </View>
       <View style={styles.wrapper}>
         <FlatList
@@ -61,11 +76,32 @@ export default function ProfileScreen() {
             return (
               <View style={styles.postWrapper}>
                 <Image style={styles.postImage} source={{ uri: item.image }} />
-                <View style={styles.commentWrapper}>
+                {/* <View style={styles.commentWrapper}>
                   <Text>Comments:</Text>
                   <Text style={styles.commentText}>
                     {item.userName}: {item.comment}
                   </Text>
+                </View> */}
+                <View style={styles.commentWrapper}>
+                  <View style={styles.commentsButtonWrapper}>
+                    <View style={styles.likesWrapper}>
+                      <TouchableOpacity>
+                        <Ionicons
+                          style={styles.exit}
+                          name="ios-heart"
+                          size={35}
+                          color={"#FF0000"}
+                          onPress={() => {
+                            getCurrentUserPost(item.id);
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <Text>{item.likes}</Text>
+                    </View>
+                    <TouchableOpacity style={styles.commentsButton}>
+                      <Text style={styles.buttonText}>Show comments</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             );
@@ -84,11 +120,15 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
   },
   exitWrapper: {
-    marginTop: 40,
+    // marginTop: 40,
     flexDirection: "row",
-    width: 380,
+    width: "100%",
     justifyContent: "space-between",
-    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    alignItems: "flex-end",
+    backgroundColor: "#f4511e",
+    height: 70,
   },
   wrapper: {
     marginTop: 40,
@@ -101,7 +141,7 @@ const styles = StyleSheet.create({
   postImage: {
     width: 360,
     height: 220,
-    borderTopRightRadius: 20,
+    borderRadius: 10,
   },
   postWrapper: {
     flexDirection: "column",
@@ -111,5 +151,48 @@ const styles = StyleSheet.create({
   commentWrapper: {
     width: 360,
     flexDirection: "column",
+  },
+  profile: {
+    color: "#FFF",
+    fontSize: 20,
+  },
+  commentsButtonWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  commentsButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#1E90FF",
+    width: 200,
+    height: 30,
+    borderRadius: 7,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+  },
+  likesWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 50,
+    justifyContent: "space-around",
+  },
+  profileImageWrapper: {
+    alignItems: "center",
+    height: 150,
+    width: "100%",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  profileName: {
+    fontSize: 16,
+    padding: 20,
   },
 });
