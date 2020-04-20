@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import LoginScreen from "./components/authentication/LoginScreen";
 import RegistrationScreen from "./components/authentication/RegistrationScreen";
-import {HomeScreen} from "./components/application/HomeScreen";
+import { HomeScreen } from "./components/application/HomeScreen";
 import ProfileScreen from "./components/application/ProfileScreen";
 import CreateScreen from "./components/application/CreateScreen";
 import { auth } from "./firebase/config";

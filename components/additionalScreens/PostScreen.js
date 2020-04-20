@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  Button,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -73,6 +72,7 @@ export const PostScreen = () => {
       <View style={styles.topHeader}></View>
       <FlatList
         data={allPosts}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => {
           // console.log("post", item);
@@ -106,7 +106,7 @@ export const PostScreen = () => {
                   </View>
                   <TouchableOpacity
                     style={styles.commentsButton}
-                    onPress={() => navigation.navigate("Comments")}
+                    onPress={() => navigation.navigate("Comments", { item })}
                   >
                     <Text style={styles.buttonText}>Show comments</Text>
                   </TouchableOpacity>

@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Button,
   Image,
+  FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
 import { firestore, storage } from "../../firebase/config";
-import { FlatList } from "react-native-gesture-handler";
 
 export default function CreateScreen() {
   const { userId, userName } = useSelector((state) => state.user);
@@ -68,6 +68,7 @@ export default function CreateScreen() {
       userId,
       userName,
       likes: 0,
+      comments: [],
     });
   };
 

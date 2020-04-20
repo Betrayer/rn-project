@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 export const MapScreen = ({ route }) => (
@@ -17,7 +17,7 @@ export const MapScreen = ({ route }) => (
 
 const styles = StyleSheet.create({
   mapContainer: {
-    width: '100%',
+    width: "100%",
     height: "100%",
   },
 });
